@@ -131,10 +131,39 @@ _start:
 ## Subtract stack
 section .text
 global _start
-
 _start:
   pop rbx
   sub rbx,rdi
   push rbx
+## Swap stack
+section .text
+global _start
 
-  
+_start:
+  push rdi
+  push rsi
+  pop rdi
+  pop rsi
+## Stack average
+section .text
+global _start
+
+_start:
+  mov rax,[rsp]
+  add rax,[rsp+8]
+  add rax,[rsp+16]
+  add rax,[rsp+24]
+  mov rbx, 4
+  div rbx
+  push rax
+## absolute jump
+section .text
+global _start
+
+_start:
+  mov rax,0x403000
+  jmp rax
+## relative jump
+
+
+
