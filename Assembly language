@@ -9,7 +9,7 @@ _start:
     div rsi;
     mov rax, rdx;
 
-## Set upper byte
+## Setting upper byte
 section .text
 global _start
 _start:
