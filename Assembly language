@@ -1,4 +1,36 @@
 # Assembly language computing 101
+## Set register
+section .text
+global _start
+
+_start:
+    mov rdi,0x1337;
+
+## Set multiple registers
+section .text
+global _start
+
+_start:
+    mov 
+## Add to register
+section .text
+global _start
+
+_start:
+    mov 
+
+## linear equation register
+section .text
+global _start
+
+_start:
+    mov 
+## intger division
+section .text
+global _start
+
+_start:
+    mov 
 
 ## Modulo operation
 section .text
