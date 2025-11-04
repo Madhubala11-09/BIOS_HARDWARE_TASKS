@@ -4,48 +4,54 @@ section .text
 global _start
 
 _start:
-    mov rdi,0x1337;
+    mov rdi,0x1337
 
 ## Set multiple registers
 section .text
 global _start
 
 _start:
-    mov 
+    mov rax,0x1337
+    mov r12,[0xCAFED00D1337BEEF]
+    mov rsp,[0x31337]
+    
 ## Add to register
 section .text
 global _start
 
 _start:
-    mov 
+    add rdi,0x331337
 
 ## linear equation register
 section .text
 global _start
 
 _start:
-    mov 
+    imul rdi,rsi
+    add rdi,rdx
+    mov rax,rdi
 ## intger division
 section .text
 global _start
 
 _start:
-    mov 
+    mov rax,rdi
+    div rsi
 
 ## Modulo operation
 section .text
 global _start
 
 _start:
-    mov rax,rdi;
-    div rsi;
-    mov rax, rdx;
+    mov rax,rdi
+    div rsi
+    mov rax, rdx
 
 ## Setting upper byte
 section .text
 global _start
 _start:
-    mov ah, 0x42;
+    mov ah, 0x42
 
 ## Efficient modulo
 section .text
@@ -95,7 +101,7 @@ global _start
 _start:
   mov [0x404000],rax
 
-#Increment:
+## Increment:
 section .text
 global _start
 
@@ -103,3 +109,32 @@ _start:
   mov rax,[0x404000]
   mov rbx, 0x1337             
   add [0x404000], rbx
+
+  ## Little endian write
+  section .text
+  global _start
+
+  _start:
+     mov rax,0xdeadbeef00001337
+     mov [rdi],rax
+     mov rbx,0xc0ffee0000
+     mov [rsi],rbx
+## Memory sum
+section .text
+global _start
+
+_start:
+  mov rax,[rdi+0]
+  mov rbx,[rdi+8]
+  add rax,rbx
+  mov [rsi],rax
+## Subtract stack
+section .text
+global _start
+
+_start:
+  pop rbx
+  sub rbx,rdi
+  push rbx
+
+  
