@@ -8,7 +8,7 @@ The first digits give the arbitration id then a '#', after that comes number of 
 ##Command we use explanation:
 Here since 73B is the reply id of the ECU then the sending id of the ECU should be 733. (73B-8 gives 733)(HEX subtraction)
 
-So we use 733#022F190000000000
+So we use 733#03022F190000000000
 here 733 is the ecu id then 22 is the service number then F190 is used to specify the VIN. When I sent  this command it gives 
  vcan1  TX - -  733   [8]  03 22 F1 90 00 00 00 00
  vcan1  TX B E  73B   [8]  10 14 62 F1 90 4C 55 41
@@ -25,5 +25,6 @@ The rest are VIN numbers so then I used
 echo "<characters>" |xxd -r -p | hexdump -C
 
 to convert the hex character to ASCII values
+
 
 
