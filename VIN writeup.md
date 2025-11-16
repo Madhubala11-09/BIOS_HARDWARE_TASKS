@@ -1,12 +1,15 @@
+#VIN challenge writeup
+##INTRODUCTION (PRE_REQUISITE)
 We use three terminals for this task, the first terminal is to open uds simulator (unified diagnostic service) which is used for communication with the ECU.In the second terminal use candump to see the messages that are being passed between ECU and the simulator. In the third terminal use cansend to request the ECU to send the VIN of the vehicle.
 
-The cansend has a specific format:
-The first digits give the arbitration id then a # then comes number of packets then the amount of data transmitted in bytes follwed by the data.
+##The cansend format
+The first digits give the arbitration id then a '#', after that comes number of packets then, the amount of data transmitted in bytes follwed by the data.
 
-Here since 73B is the reply id of the ecu then the sending id of the ecu should be 733.
+##Command we use explanation:
+Here since 73B is the reply id of the ECU then the sending id of the ECU should be 733. (73B-8 gives 733)(HEX subtraction)
 
 So we use 733#022F190000000000
-here 733 is the ecu id then 22 is the service number then F190 is used to specify the VIN. so when I sent  this command it gives 
+here 733 is the ecu id then 22 is the service number then F190 is used to specify the VIN. When I sent  this command it gives 
  vcan1  TX - -  733   [8]  03 22 F1 90 00 00 00 00
  vcan1  TX B E  73B   [8]  10 14 62 F1 90 4C 55 41
  
@@ -22,4 +25,5 @@ The rest are VIN numbers so then I used
 echo "<characters>" |xxd -r -p | hexdump -C
 
 to convert the hex character to ASCII values
+
 
