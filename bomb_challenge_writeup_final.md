@@ -1,5 +1,5 @@
-# phase-1
-## running the file
+# Phase-1
+## Running the file
 run the file - gdb bomb (Use sestatus (install with sudo apt install policycoreutils) )(it is an executable file already)
 ## Method to solve
 2. disassemble main using the command disas main
@@ -13,7 +13,7 @@ we disas the strings_not_equal function and find that the rsi value is moved to 
 9. then enter the string and put c for breakpoints
 10. Phase 1 defused. How about the next one? will be the output.
 
-# phase-2
+# Phase-2
 ## Finding conditions for the input
 1. if cmp sets sign flag then bomb explode hence the numbers are positive (Sign flag is 0 if it is positive, and 1 if it is negative)
 
@@ -61,7 +61,7 @@ eax            0x4                 4
 
 similarly we give continue and find all other numbers
 final answer 1 2 4 7 11 16
-# phase 3
+# Phase 3
 ## Condition for the input 
 1. no negative numbers and 1
  rax =2
