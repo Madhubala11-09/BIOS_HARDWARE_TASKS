@@ -6,11 +6,13 @@ Run the file - gdb bomb (Use sestatus (install with sudo apt install policycoreu
 2. Set break points at the lines of phase 1 and explode bomb
 3. disassemble phase_1
 4. Use the nexti command until you get to the strings_not_equal line
-We disas the strings_not_equal function and find that the rsi value is moved to rbp, then rbp is moved to rdi
-5. since in the before line we moved something(the value to compare eax)(it is a memory address) into esi, read the rsi register using the command x/s $rsi
-6. It gives a string called "I turned the moon into something I call a Death Star."
-7. Now give run
-8. Then enter the string and put c for breakpoints
+We disas the strings_not_equal function and find that the rsi value is moved to rbp, then rbp is moved to rdi, then the function string_length is called, where all registers values change.
+6. since in the before line we moved something(the value to compare eax)(it is a memory address) into esi, read the rsi register using the command x/s $rsi
+7. It gives a string called "I turned the moon into something I call a Death Star."
+8. Now give run
+9. Then enter the string and put c for breakpoints
+    
+
 
 ### Final answer: I turned the moon into something I call a Death Star.
 
@@ -40,7 +42,7 @@ This part only does some computation, hence we set a breakpoint and try analyzin
  
  0x0000000000400df2 <+49>:	cmp    DWORD PTR [rsp+rbx*4],eax
  
-since it is compared to eax we will check eax value using 
+since it is compared to eax, we will check the  eax value using 
 info registers eax
 
 eax            0x1                 1
