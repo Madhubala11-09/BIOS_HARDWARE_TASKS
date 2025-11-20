@@ -31,9 +31,10 @@ cmp    eax,0x5
 
 3. The read six numbers actually just appends values into the stack and registers nothing more.
 
-4. This part only does some computation, hence we set a breakpoint and try analyzing this part with various inputs
 
 ## Finding the actual computation of the program
+
+This part only does some computation, hence we set a breakpoint and try analyzing this part with various inputs
 
  0x0000000000400dee <+45>:	add    eax,DWORD PTR [rsp+rbx*4-0x4]
  
