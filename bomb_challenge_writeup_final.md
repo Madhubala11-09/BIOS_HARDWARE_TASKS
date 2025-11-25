@@ -106,11 +106,14 @@ cmp    DWORD PTR [rsp+0xc],0x7
  
  0x0000000000400e35 <+49>:	jmp    QWORD PTR [rax*8+0x402220]
    
-To solve this phase, I first observed that the program uses the first input number to calculate a jump target, so I tested with the input 6 and found that it jumped to address 0x0000000000400e9e. At this location, the program sets eax to 0 and then continues into a sequence of addition and subtraction instructions that modify eax. Since the final comparison checks whether eax equals the second input number, the goal is to choose a first input that causes the program to jump to a block where the arithmetic operations cancel out, keeping eax unchanged. By examining the jump table, I found that the jump we need is to 0x0000000000400e97, because this section contains balanced addition and subtraction instructions that leave eax at 0. Therefore, the correct first number to reach this jump target is 4, and since eax stays at 0, the second input must also be 0. Hence, the solution for this phase is the pair: 4 0.
+To solve this phase, I first observed that the program uses the first input number to calculate a jump target, so I tested with the input 6 and found that it jumped to address 0x0000000000400e9e. At this location, the program sets eax to 0 and then continues into a sequence of addition and subtraction instructions that modify eax. Since the final comparison checks whether eax equals the second input number, the goal is to choose a first input that causes the program to jump to a block where the addition and subtraction operations cancel out, keeping eax unchanged. By examining the lines that it can jump to, I found that the jump we need is to 0x0000000000400e97, because this section contains balanced addition and subtraction instructions that leave eax at 0. Therefore, the correct first number to reach this jump target is 4, and since eax stays at 0, the second input must also be 0. Hence, the solution for this phase is 4,0.
    
 ### final answer: 4 0
    
 phase 4
+
  0x0000000000400f1b <+29>:	cmp    eax,0x2
    0x0000000000400f1e <+32>:	jne    0x400f27 <phase_4+41>
+
 number of input is 2 only
+
