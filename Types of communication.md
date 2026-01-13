@@ -124,7 +124,6 @@ void loop() {
 void setup(){
   Wire.begin(periph0er_arduino);
   Wire.onReceive(doing);
-  Serial.begin(115200);
   Serial.println("Reciever is ready");
   
 }
