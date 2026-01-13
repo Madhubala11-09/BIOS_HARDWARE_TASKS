@@ -68,8 +68,8 @@ void loop() {
 
 # I2C communication
 ## HARDWARE SETUP:
-1. SDA 
-2. SCL
+1. SDA-A4
+2. SCL-A5
 3. GND
 4. 5V
 ## WORKING:
