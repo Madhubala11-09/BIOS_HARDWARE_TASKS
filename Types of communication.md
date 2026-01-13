@@ -65,6 +65,10 @@ void loop() {
   }
   
 }
+Key points to note:
+the Serial.available checks if there is any data available in the buffer storage and returns true or false answer.
+
+<img width="820" height="658" alt="image (1)" src="https://github.com/user-attachments/assets/5d5619a3-ba39-4cbc-bede-e9862904e296" />
 
 # I2C communication
 ## HARDWARE SETUP:
@@ -122,11 +126,13 @@ void loop() {
 #define peripher_arduino 8
 
 void setup(){
-  Wire.begin(periph0er_arduino);
+  Serial.begin(115200);
+  Wire.begin(peripher_arduino);
   Wire.onReceive(doing);
   Serial.println("Reciever is ready");
   
 }
+
 
 void doing(int howmany){
   while(Wire.available()){
@@ -139,6 +145,12 @@ void doing(int howmany){
 void loop(){
   
 }
+Key points to note:
+Wire.onReceive(doing) function sets up an Interrupt Service Routine (ISR). When the Master sends data, the Arduino hardware physically interrupts whatever it is doing to run the doing() function immediately. This ensures no data bits are missed.Use the onReceive function to save the data into a variable (buffer). Use the loop() to check if there is new data and print it.
+
+<img width="204" height="117" alt="image" src="https://github.com/user-attachments/assets/88ca8009-075e-4074-981b-0a57d5128fdb" />
+<img width="286" height="292" alt="image" src="https://github.com/user-attachments/assets/27651ec2-4dd3-4ab8-b650-33556b38aa3a" />
+
 
 # SPI communication
 ## HARDWARE SETUP:
@@ -346,4 +358,8 @@ What it does: Along with CPOL, this determines the "SPI Mode" (0, 1, 2, or 3).
 7. SPR1 and SPR0 (SPI Clock Rate) - Bits 1 & 0
 
 What they do: These two bits work together to set the speed of the clock (only for the Master).
+
+<img width="1045" height="443" alt="Screenshot from 2026-01-09 13-48-30" src="https://github.com/user-attachments/assets/c7d6fd01-cde4-455f-a230-b522dab2d375" />
+
+<img width="286" height="292" alt="image" src="https://github.com/user-attachments/assets/c7f91703-51a1-45ed-8fe9-f7dbd52d6b01" />
 
