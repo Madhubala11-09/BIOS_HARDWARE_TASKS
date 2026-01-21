@@ -3,8 +3,10 @@
  https://mahmoudjadaan.blogspot.com/2025/09/bluetooth-low-energy-lab-1-hands-on-lab.html
  
  #Enable BLE on Linux
-$ sudo rfkill unblock all
-$ sudo btmgmt le on
+ ```
+ $ sudo rfkill unblock all
+ $ sudo btmgmt le on
+ ```
 
  #Check that you have a bluetooth antenna device
 $ hcitool dev
@@ -12,15 +14,15 @@ Devices:
 	hci0	B8:27:EB:76:11:25
 
  #if necessary, restart bluetooth service
-$ sudo service bluetooth restart
+```$ sudo service bluetooth restart
 $ sudo service dbus restart
-
+```
  #disable/enable bluetooth device
-$ sudo hciconfig hci0 down
+```$ sudo hciconfig hci0 down
 $ sudo hciconfig hci0 up
-
+```
  #finding the MAC of your device
-$ sudo hcitool lescan
+```$ sudo hcitool lescan```
 
 # FLAG 1:
 
@@ -29,18 +31,18 @@ This task was just to find the score; once we check the score, the blue light is
 # FLAG 2:
 
 This task was to read handles. I   learned handels are represented as ascii or hex values
-so in gatttool the command for reading was just how e check the score, gatttool -b D0:EF:76:32:4F:66 --char-read -a 0x002e, excluding the other parts.
+so in gatttool the command for reading was just how e check the score,``` gatttool -b D0:EF:76:32:4F:66 --char-read -a 0x002e```, excluding the other parts.
 
 # FLAG 3:
 
-This task asked us to read a handle and execute that command. When I read the handle, it asked to change the device name to MD5. MD5 is a way to encrypt the data, so to encrypt i,t we use the command echo -n "<DEVICENAME>" | md5sum
-echo -n "2b00042f7481c7b056c4b410d28f33c" | md5sum
+This task asked us to read a handle and execute that command. When I read the handle, it asked to change the device name to MD5. MD5 is a way to encrypt the data, so to encrypt i,t we use the command ```echo -n "<DEVICENAME>" | md5sum
+echo -n "2b00042f7481c7b056c4b410d28f33c" | md5sum```
 
 Then we submit the first 20 characters of this result as the flag.
 
 # FLAG 4:
 1800 (Generic Access)
-Everything starts with "gatttool -b <MAC_ADDRESS> -I" to get the interactive mode.
+Everything starts with```gatttool -b <MAC_ADDRESS> -I```to get the interactive mode.
 In interactive mod,e we use connect to connect with the device, and then primary to see the services.
 The 
 device information service is with UUID 0x180A
@@ -55,23 +57,23 @@ custom service hosts all characteristics starting with handle 0x0028. The handle
 
 # FLAG 5:
 This task asked to read handle 32, when we do it told write anything here, so from the flag submission command, I figured out the syntax to write data, hence, 
-gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x32 -n $(echo -n "Hello")
+```gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x32 -n $(echo -n "Hello")```
 
 # FLAG 6:
-This task was to write an ascii value into the handle 34, hence we use the same command as before  gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x34 -n $(echo -n "yo")
+This task was to write an ascii value into the handle 34, hence we use the same command as before ``` gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x34 -n $(echo -n "yo")```
 
 # FLAG 7:
 This task was to write a hex value 0x007 into the handle 36, hence we used the command
-gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x36 -n 07
+```gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x36 -n 07```
 
 # FLAG 8:
 This task was to write and read handles in a different method. I learnt that in gatttool we can represent the handle as both hex and decimal in a similar way, or the command as above worked
-gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 58 -n c9
+```gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 58 -n c9```
 
 # FLAG 9:
 This task was related to bash scripting 
 We have to write the hex value from 0 to ff that is 255 values, and read the handle after writing to reveal the flag. The correct hex value to revealthe  flag is not known, hence we brute force it by writing a bash script.
-
+```
 MAC="D0:EF:76:32:4F:66"
 HANDLE="0x003c"
 
@@ -93,22 +95,22 @@ for i in {1..1000}; do
     gatttool -b $MAC --char-read -a $HANDLE
 done
 
-
+```
 
 # FLAG 11:
 This task was to listen to a particular handle for a single notification. When I went through the tools that gatttool have to offer with the help command I found a option called --listen when i searched for syntax in google i figured that this should be used when we write something in the handle also we use 0100 to get notification hence the command is,
-gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x0040 -n 0100 --listen
+```gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x0040 -n 0100 --listen```
 
 # FLAG 12:
 This task was to listen for a single indication, this time 0200 for the indication and 0300 for both the indication and notifications. The command we use is:
- gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x0044 -n 0200
+``` gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x0044 -n 0200```
  
 # FLAG 13:
 This is to get multiple notification the same command as before. The  challenge will work,
-In the return messages, the second one is the flag. the command we use is gatttool -b  D0:EF:76:32:4F:66 --char-write-req -a 0x46 -n 0300 --listen
+In the return messages, the second one is the flag. the command we use is ```gatttool -b  D0:EF:76:32:4F:66 --char-write-req -a 0x46 -n 0300 --listen```
 
 # FLAG 14:
-This task is to get multiple indication the same command works, in the return message, the second one is the flag. the command we use is gatttool -b  D0:EF:76:32:4F:66 --char-write-req -a 0x4a -n 0100 --listen
+This task is to get multiple indication the same command works, in the return message, the second one is the flag. the command we use is ```gatttool -b  D0:EF:76:32:4F:66 --char-write-req -a 0x4a -n 0100 --listen```
 
 # FLAG 15: Unsupported 
 
@@ -120,7 +122,7 @@ ATT Maximum Transmission Unit (MTU) is the maximum length of an ATT packet.
 # FLAG 17:
 
 This task was to write and respond 
-gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x50 -n $(echo -n "hello" | xxd -p) --listen
+```gatttool -b D0:EF:76:32:4F:66 --char-write-req -a 0x50 -n $(echo -n "hello" | xxd -p) --listen```
 
 # FLAG 18:
 I just listened after writing and got the flag. 
