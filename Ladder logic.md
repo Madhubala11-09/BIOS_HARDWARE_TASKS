@@ -28,3 +28,8 @@ OR
 XOR
 FUNCTION BLOCK
 timer example 
+
+# Traffic Light
+
+<img width="1916" height="384" alt="image" src="https://github.com/user-attachments/assets/41252aa1-0d4e-4ac2-bde1-2cfe453f50b7" />
+
