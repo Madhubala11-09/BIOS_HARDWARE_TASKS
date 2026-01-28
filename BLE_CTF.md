@@ -150,6 +150,8 @@ To find the Manufacturer Name of a certain device, use "hcitool lescan" to do a 
 # BLE BASICS:
 
 ## BLE stack:
+<img width="240" height="199" alt="image" src="https://github.com/user-attachments/assets/69316c90-a8c3-487f-85a6-ddaaec64fad1" />
+
 ### APPLICATION:
 It uses the APIs (Program telling the device what to do) provided by the host to send and receive information.
 Manages the Profiles.Takes raw hexadecimal values received from the ATT table and converts them into something meaningful
