@@ -145,13 +145,40 @@ Everything starts with "gatttool -b <MAC_ADDRESS> -I" to get the interactive mod
 You read values using --char-read and specify the handle address with -a.
 You write values using --char-write and specify the handle address with -a.
 
-To find the Manufacturer Name of a certain device, use "hcitool lescan" to do a scan of Bluetooth Low Energy (BLE devices and to find the address of your device.
+handle = 0x0002, char properties = 0x20, char value handle = 0x0003, uuid = 00002a05-0000-1000-8000-00805f9b34fb 
+0x0002- Declaration Handle
+0x0003- actual "Address"
 
+Difference between req and cmd:
+```
+--char-write-req this requests to write and waits for incication
+--char-write-cmd this doesnt wait for indication it just writes
+ ```
+Difference between notification and indication:
+Notifications (Fast & Unreliable): The device sends the data and immediately forgets about it.
+Indications (Slower & Reliable): The device sends the data and waits. It will not send the next piece of data until your phone sends back a Confirmation packet.
+## Primary services:
+### GAP- UUID: 0x1800
+Generic Access Service 
+Characteristics:
+Device Name (0x2A00): The UTF-8 string that you see when you scan for devices (e.g., "My_Arduino_Sensor").
+
+Appearance (0x2A01): A 16-bit value that tells the phone what kind of device it is 
+
+Peripheral Preferred Connection Parameters (0x2A04): (Optional but common) Tells the central device (your phone) how often it would like to communicate to save battery.
+
+### GATT- UUID: 0x1801
+Characteristic:
+Service Changed (0x2A05): This is the only critical characteristic here. If you update your device's firmware and add a new sensor feature
+### DIS- 0x180A
+Provides the Manufacturer Name, Model Number, and Firmware Version.
+### BAS- 0x180F
+Provides the Battery Level percentage (crucial for EEE projects involving remote sensors).
 # BLE BASICS:
 
 ## BLE stack:
 <img width="240" height="199" alt="image" src="https://github.com/user-attachments/assets/69316c90-a8c3-487f-85a6-ddaaec64fad1" />
-
+### CONTROLLER
 ### APPLICATION:
 It uses the APIs (Program telling the device what to do) provided by the host to send and receive information.
 Manages the Profiles.Takes raw hexadecimal values received from the ATT table and converts them into something meaningful
@@ -159,10 +186,15 @@ Manages the Profiles.Takes raw hexadecimal values received from the ATT table an
 ### HOST:
 This contains the GATT,GAP,ATT,SMP, L2CAP,HCI
 
-GATT-Generic Attribute Profile
+### HOST-CONTROLLER-INTERFACE:
+
+GATT-Generic Attribute Profile:
+
 
 ATT- Atribute protocol:
 It is a rule for communication.
+It has a 16-bit handle and a UUID to tell the type and then a value with a particular length.
+
 
 <img width="744" height="421" alt="image" src="https://github.com/user-attachments/assets/b0e882aa-20bb-4626-8216-6f03b3b12ae5" />
 
@@ -183,17 +215,15 @@ It converts data from above to suit the lower level, and the lower level to suit
 HCI- Host Controller Interface:
 
 GATT Server (usually the Peripheral) holds the data. The GATT Client (usually the Central) wants to access it. But before any conversation can happen, the client must first figure out what topics the server can discuss.
+
 ## Client-Initiated Operations
 Read
 Write
 Write without Response
+
 ## Server-Initiated Operations
 Notify
 Indicate
-
-Characteristics are fragments of a larger Attribute Table.
-
-Handles are the unique keys used to jump to a specific row.
 
 UUIDs define the "meaning" of the data in that row.
 
