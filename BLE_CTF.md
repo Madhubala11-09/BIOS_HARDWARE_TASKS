@@ -51,9 +51,7 @@ UUID defines the properties and metadata of the attribute we’ll be accessing, 
 
 characteristics to access the characteristics of a service, we use attr handle and end grp handle, along with characteristics
 
-Manufacturer Name String Characteristic has a standard UUID of 0x2A29
-
-custom service hosts all characteristics starting with handle 0x0028. The handles below this are part of the standard service. in the characterstics list, we only have 15,19,2 when i checked each handle value seperately I got the flag.
+Manufacturer Name String Characteristic has a standard UUID of 0x2A29. Read that handle to get the flag
 
 # FLAG 5:
 This task asked to read handle 32, when we do it told write anything here, so from the flag submission command, I figured out the syntax to write data, hence, 
@@ -117,7 +115,7 @@ This task is to get multiple indication the same command works, in the return me
 # FLAG 16:
 This task requires us to connect to a particular mtu. Open the interactive mode of gatttool then we used mtu 247 then while we read the flag handle, it gave Set your connection MTU to 444, so when i changed to 444 i got the flag.
 
-ATT Maximum Transmission Unit (MTU) is the maximum length of an ATT packet.
+ATT Maximum Transmission Unit (MTU) is the maximum length of an ATT packet. MTU is 23 bytes by default. In this, 3 bytes are for the protocol header, and rest 20 bytes are for the actual data
 
 # FLAG 17:
 
