@@ -171,7 +171,7 @@ Service Changed (0x2A05): This is the only critical characteristic here. If you 
 ### DIS- 0x180A
 Provides the Manufacturer Name, Model Number, and Firmware Version.
 ### BAS- 0x180F
-Provides the Battery Level percentage (crucial for EEE projects involving remote sensors).
+Provides the Battery Level percentage.
 # BLE BASICS:
 
 ## BLE stack:
