@@ -33,6 +33,26 @@ https://realpython.com/python-sockets/#multi-connection-client-and-server
 <img width="1920" height="920" alt="image" src="https://github.com/user-attachments/assets/79c7804c-6587-4cc1-b1bb-01243cdf2f1d" />
 [https://app.plcsimulator.online/](https://app.plcsimulator.online/)
 
+# SOCKET PROGRAMMING:
+## Creating a socket object:
+1. connecting two nodes of a network. one socket listens while other advertises
+```
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+```
+AF_NET is the address family, i.e tells the system how to find the destination, types:
+1.AF_INET (IPv4)-32-bit addresses-192.168.1.1
+2.AF_INET6 (IPv6)-newer version of IP addresses-2001:0db8:85a3...
+3. AF_UNIX (Unix Domain Sockets)-Used for communication between two processes on the same machine.
+SOCK_STREAM is the socket type,i.e tells the system how to send the data, which is specifically for the TCP protocol, Reliable, ordered, two-way, connection-based.
+
+## Preparing for server to connect:
+```server_address = ('localhost', 12345)```
+This says the connection will be listent from local host(the computer) and 12345 will be the port that the client had to use to communicate with the server, and is the port the server listen to and lock on.
+```sock.bind(server_address)```
+
+
+
 
 # TCP SERVER
 ```
@@ -85,3 +105,103 @@ finally:
     print('Closing client')
     sock.close()
 ```
+# TCP SERVER MULTIPLE
+```
+import socket
+from _thread import start_new_thread
+import threading
+
+lock = threading.Lock()
+
+def handle_client(c):
+    while True:
+        data = c.recv(1024)
+        if not data:
+            print('Bye')
+            lock.release()
+            break
+        c.send(data[::-1])
+    c.close()
+
+def main():
+    host = ''
+    port = 12345
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((host, port))
+    s.listen(5)
+    print("Server running on port", port)
+
+    while True:
+        c, addr = s.accept()
+        lock.acquire()
+        print('Connected to:', addr[0], ':', addr[1])
+        start_new_thread(handle_client, (c,))
+
+if __name__ == '__main__':
+    main()
+```
+explaining parts of code:
+
+import socket
+from _thread import start_new_thread
+import threading
+
+lock = threading.Lock()
+
+def handle_client(c):
+    while True:
+        data = c.recv(1024)
+        if not data:
+            print('Bye')
+            lock.release()
+            break
+        c.send(data[::-1])
+    c.close()
+
+def main():
+    host = ''
+    port = 12345
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((host, port))
+    s.listen(5)
+    print("Server running on port", port)
+
+    while True:
+        c, addr = s.accept()
+        lock.acquire()
+        print('Connected to:', addr[0], ':', addr[1])
+        start_new_thread(handle_client, (c,))
+
+if __name__ == '__main__':
+    main()
+
+
+
+    
+# TCP CLIENT MULTIPLE
+```
+import socket
+
+def main():
+    host = '127.0.0.1'
+    port = 12345
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))
+
+    msg = "hello from client"
+    while True:
+        s.send(msg.encode('ascii'))
+        data = s.recv(1024)
+        print('Received from server:', data.decode('ascii'))
+
+        ans = input('Do you want to continue (y/n): ')
+        if ans.lower() != 'y':
+            break
+
+    s.close()
+
+if __name__ == '__main__':
+    main()
+```
+
