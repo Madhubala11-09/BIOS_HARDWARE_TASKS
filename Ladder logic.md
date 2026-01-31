@@ -205,3 +205,63 @@ if __name__ == '__main__':
     main()
 ```
 
+# TCP MODBUS SERVER
+```
+#!/bin/python
+from pyModbusTCP.server import ModbusServer
+from time import sleep
+from random import uniform
+
+# Create an instance of ModbusServer
+server = ModbusServer("127.0.0.1", 12345, no_block=True)
+
+try:
+    print("Start server...")
+    server.start()
+    print("Server is online")
+    
+    # Initialize state with a list containing 0 (Modbus words are always lists)
+    state = [0]
+    
+    while True:
+        # NEW WAY: Use server.data_bank instead of the global DataBank class
+        # Writing a random value to Holding Register 0
+        server.data_bank.set_holding_registers(0, [int(uniform(0, 100))])
+
+        # Reading Holding Register 1
+        current_reg1 = server.data_bank.get_holding_registers(1)
+
+        # Check if current_reg1 exists and has changed
+        if current_reg1 is not None and state != current_reg1:
+            state = current_reg1
+            print(f"Value of Register 1 has changed to {state}")
+
+        sleep(0.5)
+
+except KeyboardInterrupt:
+    print("\nShutdown server ...")
+    server.stop()
+    print("Server is offline")
+
+```
+# TCP MODBUS CLIENT
+```                           
+from pyModbusTCP.client import ModbusClient
+client= ModbusClient(host="127.0.0.1",port=12345,unit_id=1, auto_open=True)
+regs = client.read_holding_registers(0, 2)
+regs1 = client.read_holding_registers(10,2)
+if regs:
+    print(regs)
+else:
+    print("read error")
+
+if client.write_multiple_registers(10, [44,55]):
+    print("write ok")
+else:
+    print("write error")
+
+if regs1:
+        print(regs1)
+else:
+        print("read error")
+```
