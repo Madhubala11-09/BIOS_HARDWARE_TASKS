@@ -1,12 +1,13 @@
 # TASK 2
 ## FIRST TASK:
+common cathode, common anode, gpio pins
 Description:
 The first task was to make a set of LEDs blink. To avoid hardcoding, I stored the pin numbers in an array for easier access. The following functions were used:
-pinMode() – to configure the respective pins as outputs.
+pinMode() – to set the respective pins as outputs.
 digitalWrite() – to switch the LEDs on and off.
-delay() – to introduce a pause before executing the next instruction.
+delay() – to give a pause before executing the next instruction.
 I implemented two for loops: the first loop lights up the LEDs sequentially from left to right, while the second loop turns them on in reverse order, from right to left. This creates a simple running light effect. The complete code is provided below.
-
+```
 void setup() {
   int q[5];
   q[0]=26;
@@ -42,7 +43,7 @@ void loop() {
  
 }
 
-
+```
 
 
 
@@ -52,7 +53,7 @@ Description:
 The task was to display digits from 0 to 9 on a seven-segment display. To simplify the program, I created an array to store the pin numbers, allowing easy access and control of each segment. I used another array to hold the binary values corresponding to each digit, where 1 turns a segment on and 0 turns it off. Since each segment of the display is associated with a specific pin, activating the correct pattern of 1s and 0s produces the desired number. To implement this, I used two nested for loops: the outer loop iterates through the digits (0–9), while the inner loop iterates through the binary values for each digit, switching the respective pins on or off to display the number.
 
 
-
+```
 int ports[]={2,4,14,12,13,5,18};
 void setup() {
   for (int i=0;i<7;i++){
@@ -87,7 +88,7 @@ void loop() {
     delay(1000);
   }
 }
-
+```
 
 Third task:
 Description:
@@ -97,7 +98,7 @@ The circuit uses a 5V battery as the power supply, with VSS (GND) connected to t
 Fourth task:
 Description:
 In this task, I included the libraries ESP32Servo.h and stdio.h to enable servo functionality. I declared servo objects using the Servo <servoname> syntax and initialized them with <servoname>.attach(pin). For communication between the user and the microcontroller, I used Serial.begin(9600), where 9600 represents the baud rate. The Serial.available() function checks whether input data has been received, while parseInt() extracts only the numerical values from the input and stores them in a variable. Additionally, I used the map() function, which takes four parameters: the value to be mapped, the input range (start and end values), and the output range (servo angle limits). This allows the input values to be scaled appropriately to control servo movement.
-
+```
 #include <ESP32Servo.h>
 #include<stdio.h>
 Servo minuteservo;
@@ -137,11 +138,12 @@ void loop() {
   servo.write(270);
   delay(1000);*/
 }
-
+```
 Fifth task
 1.Blink in built led
 Description:
 In this code, the #define function is used to associate a pin with its corresponding memory address. The statement DDRB |= (1 << DDB5); configures pin 5 of Port B as an output. Here, DDRB represents the Data Direction Register for Port B, and the bitwise OR (|) operation ensures that only bit 5 is modified without affecting the other bits. The expression 1 << DDB5 shifts the value 1 five positions to the left, thereby setting bit 5 to 1. The for loop is used as an alternative to a delay function, creating a simple time pause in execution. Finally, the statement PORTB &= ~(1 << PORTB5); resets bit 5 back to 0, turning the output low while preserving the other bits in Port B.
+```
 #define DDRB*((volatile uint8_t*)0x24)
 #define PORTB*((volatile uint8_t*)0x25)
 //#include <util/delay.h>
@@ -158,7 +160,7 @@ void loop() {
   //_delay_ms(500);
   for(volatile long i=0;i<1000000;i++){PORTB=0;}
 }
-
+```
 
 
 https://github.com/Madhubala11-09/BIOS_HARDWARE_TASK_2.git
