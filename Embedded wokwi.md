@@ -1,12 +1,13 @@
 # TASK 2
 ## FIRST TASK:
-common cathode, common anode, gpio pins
 Description:
 The first task was to make a set of LEDs blink. To avoid hardcoding, I stored the pin numbers in an array for easier access. The following functions were used:
 pinMode() – to set the respective pins as outputs.
 digitalWrite() – to switch the LEDs on and off.
 delay() – to give a pause before executing the next instruction.
 I implemented two for loops: the first loop lights up the LEDs sequentially from left to right, while the second loop turns them on in reverse order, from right to left. This creates a simple running light effect. The complete code is provided below.
+<img width="424" height="318" alt="image" src="https://github.com/user-attachments/assets/53be6708-026b-47e5-b734-da05488e6271" />
+
 ```
 void setup() {
   int q[5];
@@ -51,6 +52,9 @@ void loop() {
 ## Second task:
 Description:
 The task was to display digits from 0 to 9 on a seven-segment display. To simplify the program, I created an array to store the pin numbers, allowing easy access and control of each segment. I used another array to hold the binary values corresponding to each digit, where 1 turns a segment on and 0 turns it off. Since each segment of the display is associated with a specific pin, activating the correct pattern of 1s and 0s produces the desired number. To implement this, I used two nested for loops: the outer loop iterates through the digits (0–9), while the inner loop iterates through the binary values for each digit, switching the respective pins on or off to display the number.
+<img width="293" height="364" alt="image" src="https://github.com/user-attachments/assets/d209e6b3-4396-4d76-909c-49f46c9a1741" />
+<img width="191" height="374" alt="image" src="https://github.com/user-attachments/assets/0e451f98-e0bc-4d89-acc3-26fd05a0d212" />
+<img width="220" height="249" alt="image" src="https://github.com/user-attachments/assets/0e924997-a4bc-40dc-8991-1342f7a1bae6" />
 
 
 ```
@@ -164,4 +168,5 @@ void loop() {
 
 
 https://github.com/Madhubala11-09/BIOS_HARDWARE_TASK_2.git
+
 
