@@ -1,5 +1,5 @@
-TASK 2
-FIRST TASK:
+# TASK 2
+## FIRST TASK:
 Description:
 The first task was to make a set of LEDs blink. To avoid hardcoding, I stored the pin numbers in an array for easier access. The following functions were used:
 pinMode() – to configure the respective pins as outputs.
@@ -47,7 +47,7 @@ void loop() {
 
 
 
-Second task:
+## Second task:
 Description:
 The task was to display digits from 0 to 9 on a seven-segment display. To simplify the program, I created an array to store the pin numbers, allowing easy access and control of each segment. I used another array to hold the binary values corresponding to each digit, where 1 turns a segment on and 0 turns it off. Since each segment of the display is associated with a specific pin, activating the correct pattern of 1s and 0s produces the desired number. To implement this, I used two nested for loops: the outer loop iterates through the digits (0–9), while the inner loop iterates through the binary values for each digit, switching the respective pins on or off to display the number.
 
@@ -162,3 +162,4 @@ void loop() {
 
 
 https://github.com/Madhubala11-09/BIOS_HARDWARE_TASK_2.git
+
