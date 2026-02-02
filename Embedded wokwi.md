@@ -94,14 +94,30 @@ void loop() {
 }
 ```
 
-Third task:
+## Third task:
+### Controls:
+#### INPUT
+RS: Register select used to say the lcd if the incoming data is command or character.
+DB-4 to DB-7: These four switches set the 4-bit data nibble. To send a character, you have to set these switches to the specific binary pattern for that letter.
+Pushbutton (Enable): The LCD only "reads" the switches when this button is pressed.
+#### POWER
+1.Potentiometer: adjust the contrast.
+2. power supply: it gives 5v to the circuit
+3. resistor: pull-down register to avoid ghost characters.
+#### Executing:
+We send data as nibbles that is high and low nibble. First we set first four high nibbles tap enable then set next four low nibbles and tap enable.
 Description:
-The circuit uses a 5V battery as the power supply, with VSS (GND) connected to the breadboard's black rail and VDD (+5V) to the red rail. A potentiometer is used to adjust the LCD contrast, while data pins DB0–DB3 are tied to GND to ensure they always read 0. Data pins DB4–DB7 are connected to pushbuttons through resistors, enabling manual input to the LCD. Control pins RS, RW, and E are properly connected to manage LCD operations, and the resistors help limit current and protect the circuit. This configuration creates a 4-bit manual input interface for the LCD using pushbuttons.
+The circuit uses a 5V battery as the power supply, with VSS (GND) connected to the breadboard's black rail and VDD (+5V) to the red rail. A potentiometer is used to adjust the LCD contrast, while data pins DB0–DB3 are tied to GND to ensure they always read 0. Data pins DB4–DB7 are connected to pushbuttons through resistors, enabling manual input to the LCD. 
+<img width="647" height="350" alt="image" src="https://github.com/user-attachments/assets/25d89e65-40a1-4441-81d9-c327dc3c2049" />
 
 
 Fourth task:
 Description:
 In this task, I included the libraries ESP32Servo.h and stdio.h to enable servo functionality. I declared servo objects using the Servo <servoname> syntax and initialized them with <servoname>.attach(pin). For communication between the user and the microcontroller, I used Serial.begin(9600), where 9600 represents the baud rate. The Serial.available() function checks whether input data has been received, while parseInt() extracts only the numerical values from the input and stores them in a variable. Additionally, I used the map() function, which takes four parameters: the value to be mapped, the input range (start and end values), and the output range (servo angle limits). This allows the input values to be scaled appropriately to control servo movement.
+<img width="471" height="309" alt="image" src="https://github.com/user-attachments/assets/9f0a7e64-649c-4e8e-962f-cbfda0db2bf9" />
+On a standard Arduino, analogRead goes from 0 to 1023 (10-bit).
+
+But analogWrite (PWM) only goes from 0 to 255 (8-bit).
 ```
 #include <ESP32Servo.h>
 #include<stdio.h>
@@ -168,5 +184,6 @@ void loop() {
 
 
 https://github.com/Madhubala11-09/BIOS_HARDWARE_TASK_2.git
+
 
 
