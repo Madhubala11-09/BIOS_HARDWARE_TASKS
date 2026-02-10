@@ -117,3 +117,12 @@ phase 4
 
 number of input is 2 only
 
+ 0x400f1b <phase_4+001d>   cmp    eax, 0x2
+     0x400f1e <phase_4+0020>   jne    0x400f27 <phase_4+41>
+     0x400f20 <phase_4+0022>   cmp    DWORD PTR [rsp+0xc], 0xe
+     0x400f25 <phase_4+0027>   jbe    0x400f2c <phase_4+46>	TAKEN [Reason: C || Z]
+
+
+     here i checked the value of dword ptr [rsp+0xc] with x/d $rsp+0xc command and figured it was the first number we entered so, it was compared to 0xe which was 14 , so when i changed my initial number to 14 the jump was taken
+
+
