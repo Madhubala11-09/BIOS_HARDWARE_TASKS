@@ -122,7 +122,38 @@ number of input is 2 only
      0x400f20 <phase_4+0022>   cmp    DWORD PTR [rsp+0xc], 0xe
      0x400f25 <phase_4+0027>   jbe    0x400f2c <phase_4+46>	TAKEN [Reason: C || Z]
 
+The input number should be less then 14.
 
-     here i checked the value of dword ptr [rsp+0xc] with x/d $rsp+0xc command and figured it was the first number we entered so, it was compared to 0xe which was 14 , so when i changed my initial number to 14 the jump was taken
+   0x0000000000400f36 <+56>:	mov    edi,DWORD PTR [rsp+0xc]
+rsp+0xc is the first input number we give.
+
+   0x0000000000400f2c <+46>:	mov    edx,0xe //edx=14
+   0x0000000000400f31 <+51>:	mov    esi,0x0  /esi=0
+   0x0000000000400f36 <+56>:	mov    edi,DWORD PTR [rsp+0xc] /edi=first input
+   0x0000000000400f3a <+60>:	call   0x400ebf <func4>
+
+
+   0x0000000000400ec3 <+4>:	mov    eax,edx / eax=14
+   0x0000000000400ec5 <+6>:	sub    eax,esi /eax=eax-esi / 14-0=14 / eax=14
+   0x0000000000400ec7 <+8>:	mov    ecx,eax /ecx=eax
+   0x0000000000400ec9 <+10>:	shr    ecx,0x1f / ecx=14>>31; ecx=0
+   0x0000000000400ecc <+13>:	add    ecx,eax / ecx=ecx+eax; ecx=14
+   0x0000000000400ece <+15>:	sar    ecx,1 / ecx=ecx/2; ecx=7
+   0x0000000000400ed0 <+17>:	add    ecx,esi /ecx=ecx+esi; ecx=14
+   0x0000000000400ed2 <+19>:	cmp    ecx,edi /14, first input
+   0x0000000000400ed4 <+21>:	jg     0x400ee4 <func4+37> /14>first input
+   0x0000000000400ed6 <+23>:	mov    eax,0x0 
+   0x0000000000400edb <+28>:	cmp    ecx,edi 
+   0x0000000000400edd <+30>:	jl     0x400ef0 <func4+49> /14<first input
+   0x0000000000400edf <+32>:	add    rsp,0x8
+   0x0000000000400ee3 <+36>:	ret
+   0x0000000000400ee4 <+37>:	lea    edx,[rcx-0x1] 
+   0x0000000000400ee7 <+40>:	call   0x400ebf <func4>
+   0x0000000000400eec <+45>:	add    eax,eax
+   0x0000000000400eee <+47>:	jmp    0x400edf <func4+32>
+   0x0000000000400ef0 <+49>:	lea    esi,[rcx+0x1]
+   0x0000000000400ef3 <+52>:	call   0x400ebf <func4>
+   0x0000000000400ef8 <+57>:	lea    eax,[rax+rax*1+0x1]
+   0x0000000000400efc <+61>:	jmp    0x400edf <func4+32>
 
 
