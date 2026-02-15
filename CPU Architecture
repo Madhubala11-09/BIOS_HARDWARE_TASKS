@@ -13,3 +13,8 @@ the memory is divided and used
 the debugger displays and names the individual instructions
 the debugger can be used to detect such vulnerabilities
 we can manipulate the memory
+Process for Identifying Bad Characters
+Send All Characters: Create a payload containing all bytes from \x00 to \xFF and send it to the application to trigger a crash.
+Inspect Memory: Use a debugger (e.g., Immunity Debugger, GDB) to view the ESP register or the memory address where the payload was sent.
+Identify Breaks: Examine the sequence of characters. If a byte is missing, replaced, or causes subsequent bytes to be skipped (e.g., \x00 acting as a string terminator), that byte is a bad character.
+Remove and Re-test: Remove the offending character from the payload, update the script, and repeat the process until the entire sequence appears correctly in memory. 
