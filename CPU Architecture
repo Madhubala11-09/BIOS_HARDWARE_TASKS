@@ -6,3 +6,10 @@ incharge for instruction and flow control.
 command and data fetched from memory
 ## alu - arithmetic logical unit
 # input/output unit
+the memory of other functions of the executed program is overwritten, potentially creating a security vulnerability.
+how:
+
+the memory is divided and used
+the debugger displays and names the individual instructions
+the debugger can be used to detect such vulnerabilities
+we can manipulate the memory
