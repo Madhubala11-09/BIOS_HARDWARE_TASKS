@@ -18,3 +18,66 @@ Send All Characters: Create a payload containing all bytes from \x00 to \xFF and
 Inspect Memory: Use a debugger (e.g., Immunity Debugger, GDB) to view the ESP register or the memory address where the payload was sent.
 Identify Breaks: Examine the sequence of characters. If a byte is missing, replaced, or causes subsequent bytes to be skipped (e.g., \x00 acting as a string terminator), that byte is a bad character.
 Remove and Re-test: Remove the offending character from the payload, update the script, and repeat the process until the entire sequence appears correctly in memory. 
+
+
+
+   0x00005555555551e8 <+63>:	mov    eax,DWORD PTR [rbp-0xc]  //eax=rbp-12
+   0x00005555555551eb <+66>:	movsxd rdx,eax                  //rdx=eax
+   0x00005555555551ee <+69>:	mov    rax,QWORD PTR [rbp-0x18] //rax=rbp-24
+   0x00005555555551f2 <+73>:	add    rax,rdx                  // rax=rbp-24+rbp-12
+   0x00005555555551f5 <+76>:	movzx  esi,BYTE PTR [rax]       // esi=rbp-24+rbp-12
+   0x00005555555551f8 <+79>:	mov    eax,DWORD PTR [rbp-0xc]  // eax=rbp-12
+   0x00005555555551fb <+82>:	cdq                             
+   0x00005555555551fc <+83>:	idiv   DWORD PTR [rbp-0x4]      
+   0x00005555555551ff <+86>:	mov    eax,edx
+   0x0000555555555201 <+88>:	movsxd rdx,eax
+   0x0000555555555204 <+91>:	mov    rax,QWORD PTR [rbp-0x20] //rax=rbp-32
+   0x0000555555555208 <+95>:	add    rax,rdx                  //rax=rbp-12+rbp-32
+   0x000055555555520b <+98>:	movzx  ecx,BYTE PTR [rax]       // ecx= rbp-12+rbp-32
+   0x000055555555520e <+101>:	mov    eax,DWORD PTR [rbp-0xc] //eax=rbp-12
+   0x0000555555555211 <+104>:	movsxd rdx,eax                   //rdx=rbp-12
+   0x0000555555555214 <+107>:	mov    rax,QWORD PTR [rbp-0x28]  //rax=rbp-40
+   0x0000555555555218 <+111>:	add    rax,rdx                  //rax=rbp-40+rbp-12
+   0x000055555555521b <+114>:	xor    esi,ecx                  //
+   0x000055555555521d <+116>:	mov    edx,esi                  // 
+   0x000055555555521f <+118>:	mov    BYTE PTR [rax],dl        //
+   0x0000555555555221 <+120>:	add    DWORD PTR [rbp-0xc],0x1 //rbp-12=rbp-12+1
+   0x0000555555555225 <+124>:	mov    eax,DWORD PTR [rbp-0xc] // eax=rbp-12+1
+   0x0000555555555228 <+127>:	cmp    eax,DWORD PTR [rbp-0x8] //eax < rbp-8
+   0x000055555555522b <+130>:	jl     0x5555555551e8 <encrypt+63> 
+
+
+
+
+
+
+
+
+
+
+
+   0x00000000000011e8 <+63>:	mov    eax,DWORD PTR [rbp-0xc]    eax=rbp-12
+   0x00000000000011eb <+66>:	movsxd rdx,eax                    rdx=eax
+   0x00000000000011ee <+69>:	mov    rax,QWORD PTR [rbp-0x18]   rax=rbp-24
+   0x00000000000011f2 <+73>:	add    rax,rdx                    rax=rbp-24+rbp-12
+   0x00000000000011f5 <+76>:	movzx  esi,BYTE PTR [rax]         esi=rbp-12
+   0x00000000000011f8 <+79>:	mov    eax,DWORD PTR [rbp-0xc]    eax=rbp-12
+   0x00000000000011fb <+82>:	cdq
+   0x00000000000011fc <+83>:	idiv   DWORD PTR [rbp-0x4]        
+   0x00000000000011ff <+86>:	mov    eax,edx
+   0x0000000000001201 <+88>:	movsxd rdx,eax
+   0x0000000000001204 <+91>:	mov    rax,QWORD PTR [rbp-0x20]
+   0x0000000000001208 <+95>:	add    rax,rdx
+   0x000000000000120b <+98>:	movzx  ecx,BYTE PTR [rax]
+   0x000000000000120e <+101>:	mov    eax,DWORD PTR [rbp-0xc]
+   0x0000000000001211 <+104>:	movsxd rdx,eax
+   0x0000000000001214 <+107>:	mov    rax,QWORD PTR [rbp-0x28]
+   0x0000000000001218 <+111>:	add    rax,rdx
+   0x000000000000121b <+114>:	xor    esi,ecx
+   0x000000000000121d <+116>:	mov    edx,esi
+   0x000000000000121f <+118>:	mov    BYTE PTR [rax],dl
+   0x0000000000001221 <+120>:	add    DWORD PTR [rbp-0xc],0x1
+   0x0000000000001225 <+124>:	mov    eax,DWORD PTR [rbp-0xc]
+   0x0000000000001228 <+127>:	cmp    eax,DWORD PTR [rbp-0x8]
+   0x000000000000122b <+130>:	jl     0x11e8 <encrypt+63>
+
