@@ -1,0 +1,62 @@
+It was a port scanner
+login as sudo user, that is nmap -sS <IP ADD>
+install nmap
+we need to get an idea of the “landscape” we are attacking.
+establish which services are running on the targets
+When a computer runs a network service, 
+it opens a networking construct called a “port” to receive the connection.
+a HTTP Webservice can nearly always be found on port 80 of the server.
+A HTTPS Webservice can be found on port 443. 
+Windows NETBIOS can be found on port 139 and SMB can be found on port 445.
+Key Port Classifications:
+Well-Known Ports (0–1023): Reserved for system services and core protocols.
+Registered Ports (1024–49151): Used by specific vendor applications.
+Dynamic/Private Ports (49152–65535): Used for temporary, client-side
+syn scan (synchronised scan)
+asyn scan (asynchronised scan)
+switch means the option that we use for scanning
+
+port scanning has three basic scan types they are:
+TCP Connect Scans (-sT)
+SYN "Half-open" Scans (-sS)
+UDP Scans (-sU)
+
+TCP connect scans:
+tcp has three-way handshake, the terminal(attacker) sends a tcp request to target serverwith syn flag.
+then server acknlowledges this packet with tcp response containing the syn flag and the ack flag
+then attacker sends a tcp request with ack flag.
+
+so what happens is nmap tries to connect with each server 
+and determines of the server is open by the response it gets
+if port is closed the response is reset flag.
+if port open the response is syn and ack flag.
+
+how does firewall work?
+It just drops the incoming packets, nmap doesnt recieve anything back, 
+this means it is open ut filtered
+also we can make the firewall respond back with reset (rst) packet thus 
+potraying it to be closed
+
+RFC request for comments:
+The Rule: 
+RFC 793 (the TCP standard) says that if you send a packet to a closed port,
+the receiver must send back a RST (Reset) packet.
+
+The Trick: 
+Nmap sends a "weird" packet (like a FIN scan). 
+A standard Linux box might follow the RFC and stay silent,
+while an old Windows box might send a Reset.
+
+The Result: 
+By comparing the reaction to the "Rulebook," 
+Nmap can guess exactly what OS you are running.
+
+RFC 793: TCP: 
+Used for port scanning (-sS, -sT) and OS detection.
+
+RFC 792: ICMP:
+Used for "Ping" scans to see if a host is alive.
+
+RFC 1122:Host Requirements:
+Defines how a computer should handle bad data packets.
+
