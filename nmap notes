@@ -21,7 +21,7 @@ TCP Connect Scans (-sT)
 SYN "Half-open" Scans (-sS)
 UDP Scans (-sU)
 
-TCP connect scans:
+##TCP connect scans:
 tcp has three-way handshake, the terminal(attacker) sends a tcp request to target serverwith syn flag.
 then server acknlowledges this packet with tcp response containing the syn flag and the ack flag
 then attacker sends a tcp request with ack flag.
@@ -51,7 +51,7 @@ The Result:
 By comparing the reaction to the "Rulebook," 
 Nmap can guess exactly what OS you are running.
 
-RFC 793: TCP: 
+RFC 793: TCP: (newest RFC is RFC 9293)
 Used for port scanning (-sS, -sT) and OS detection.
 
 RFC 792: ICMP:
@@ -60,3 +60,39 @@ Used for "Ping" scans to see if a host is alive.
 RFC 1122:Host Requirements:
 Defines how a computer should handle bad data packets.
 
+## SYN Scans
+###IDS: INTRUSION DETECTION SYSTEM
+
+####TWO TYPES OF METHOD:
+1. Signature-based: specific patterns, byte sequence, malicious code string that known
+2. It analyses previous data to know what normal looks like, and raises an anomaly if this is changed
+
+####Two TYPES OF IDS BASED ON THE POSITION:
+NIDS network IDS specific points in the network
+HIDS host-based IDS specific device
+
+So IDS is used only after the three-way handshake is over but in syn scan we stop,
+the three-way handshake by sending rst from the client side after the target sends the ack form its side.
+thats why we call it stealth or half-open connection, thus these are faster.
+syn scans used to scan TCP port range of a target.
+tcp scan is where we do a three-way handshake with the target. A SYN scan sends a RST tcp packet 
+after recieving syn/ack from the target.
+
+cons: it needs root access
+unstable services are sometimes brought down by SYN scan.
+ SYN scans can also be made to work by giving Nmap the CAP_NET_RAW,
+CAP_NET_ADMIN and CAP_NET_BIND_SERVICE capabilities; 
+however, this may not allow many of the NSE scripts to run properly.
+
+
+##MITM:
+The structure of the TCP packet:
+It has header and payload
+the header is 20 bytes:
+1. source port
+2. Seqence number 
+3. Acknowledgement number
+4. data offset syn ack fin rst
+5. checksum calculated value to make sure data wasnt changed in between
+6. options
+6. data 
