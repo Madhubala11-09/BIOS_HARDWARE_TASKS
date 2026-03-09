@@ -96,3 +96,8 @@ the header is 20 bytes:
 5. checksum calculated value to make sure data wasnt changed in between
 6. options
 6. data 
+
+#MQTT notes:
+publisher
+broker
+subscriber
