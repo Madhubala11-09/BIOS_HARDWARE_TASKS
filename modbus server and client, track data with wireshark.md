@@ -1,7 +1,11 @@
 
 # wireshark setup 
 
-use lo(loopback) i intially used any since lo needed few permission settings, but realised any captures all packets that my computer is communicating with anyway i can filter it but it was lot of data, after changing permissions i used lo to capture the data, before that i added 1212 port also in modbus/tcp port default port so that it recognises the captured datd using modbus protocol, then i applied the filter modbus.func_code==6 for single register writing
+I started by capturing on any, but it was too cluttered with background noise. Once I fixed the permission settings for the loopback interface (lo), I moved the capture there for better clarity. I also updated the Modbus/TCP dissector settings to include port 1212 so Wireshark would recognize the protocol. Finally, I used the following filters for filtering:
+1. modbus.func_code == 3 to track holding register reads.
+2.  modbus.func_code == 6 to track single register writes
+3. modbus.func_code == 4 to track input register writes
+4. modbus.func_code == 16 to track multiple register writes
 
 # writing single register alone
 
