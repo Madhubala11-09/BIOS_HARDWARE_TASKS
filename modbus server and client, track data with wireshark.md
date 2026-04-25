@@ -52,6 +52,7 @@ except Exception as e:
     print("Server is offline")
 
 ```
+## code explanation:
 we use databank to read and write from register, here in the server code server.data_bank.set_holding_registers() is to write the value of holding register, whereas server.data_bank.get_holding_registers() is to read the value of holding register. Here in the code, in the while loop, I read all the 100 register, and update last_value before the user enters data, and after the user enters data I read all 100 registers, to update it as current_state, so we can find if there is a change in registers value by comparing last and current state and print the value of register. 
 
 
@@ -121,6 +122,7 @@ while True:
 
 client.close()
 ```
+## Code explanation: 
 Here in this code we use:
 
 1. client.read_holding_registers() to read register, this requests the server to read, here the first value in the bracket will be the register number and second value will be how many register to read so this can be used to read single and multiple registers.
