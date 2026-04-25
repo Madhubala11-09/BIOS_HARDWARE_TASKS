@@ -1,10 +1,10 @@
 
 # wireshark setup 
 
-I started by capturing on any, but it was too cluttered with background noise. Once I fixed the permission settings for the loopback interface (lo), I moved the capture there for better clarity. I also updated the Modbus/TCP dissector settings to include port 1212 so Wireshark would recognize the protocol. Finally, I used the following filters for filtering:
+To capture the Modbus TCP packets, I opened Wireshark and selected the loopback interface (lo), since the communication between the client and server occurs locally on 127.0.0.1 (local host). Initially, capturing on the “any” interface resulted in capturing all the traffic that my computer was handling in that moment, so i tried loopback interface to isolate only the relevant packets. After starting the capture, I configured Wireshark to recognize traffic on port 1212 as Modbus TCP by adding this port in the Modbus/TCP dissector settings (Analyze then Decode As / Protocol Preferences). Then, I used filters such as modbus.func_code == 3, modbus.func_code == 6, and modbus.func_code == 16 to view specific operations like reading and writing registers. Once the client performed actions (read/write), the corresponding Modbus request and response packets appeared in Wireshark. Finally, I used the following filters for filtering:
 1. modbus.func_code == 3 to track holding register reads.
 2.  modbus.func_code == 6 to track single register writes
-3. modbus.func_code == 4 to track input register writes
+3. modbus.func_code == 4 to track input register reads.
 4. modbus.func_code == 16 to track multiple register writes
 
 # writing single register alone
@@ -144,7 +144,11 @@ Here in this code we use:
 3. I had trouble with the server, execution of while loop, it kept showing varies errors, and kept running infinetly without waiting for the client to respond, so after refering few other examples of modbus tcp server I figured they used sleep so I added that and the problem was rectified.
 
 
-4. Then in wireshark as I mentioned above I had trouble with capturing packets.
+4. Then in wireshark as I mentioned above I had trouble with capturing packets, that is with lo and any, since I had hard time with the permissions required to use lo to capture the packets.
 
 
 5. Then I had trouble with choosing the port, because when I used port 502, the desginated port for modbus(tcp) I got port busy error, even after killing all the running operations, so I used another random port 1212, but this port didn't get recognised as modbus protocol, so I had to add this port as default modbus port to use modbus protocol function code stuff, I had hard time figuring this out.
+
+# what is happening:
+
+The communication follows a simple request–response flow. When the client performs an operation (such as reading or writing a register), it sends a Modbus TCP request packet containing the function code, register address, and data. This packet is captured in Wireshark on the loopback interface. The server receives the request, processes it using the DataBank (either reading or updating register values), and then sends a response packet back to the client confirming the operation or returning the requested data. Wireshark captures both the request and response packets.
