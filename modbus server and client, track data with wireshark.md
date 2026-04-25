@@ -28,32 +28,22 @@ I started by capturing on any, but it was too cluttered with background noise. O
 from pyModbusTCP.server import ModbusServer, DataBank
 from time import sleep
 
-# Ensure port matches client (1109)
 server = ModbusServer("127.0.0.1", 1212, no_block=True)
 
 try:
     print("Starting server...")
     server.start()
     print("Server is online")
-    
-    # Initialize the baseline for all 100 registers
-    # Use get_words, NOT get_holding_registers
     last_state=server.data_bank.get_holding_registers(0,100)
     while True:
-        # Get the current snapshot
         current_state = server.data_bank.get_holding_registers(0, 100)
-
-        # Check if anything changed in the whole bank
         if current_state != last_state:
             for i in range(100):
                 if current_state[i] != last_state[i]:
                     print(f"Change in register {i}: {last_state[i]}-->{current_state[i]}")
-
-
-            # Update the baseline
             last_state = current_state
 
-        sleep(0.5) # MUST be inside the while loop
+        sleep(0.5) 
 
 except Exception as e:
     print(f"Error occurred: {e}")
@@ -62,13 +52,15 @@ except Exception as e:
     print("Server is offline")
 
 ```
+we use databank to read and write from register, here in the server code server.data_bank.set_holding_registers() is to write the value of holding register, whereas server.data_bank.get_holding_registers() is to read the value of holding register. Here in the code, in the while loop, I read all the 100 register, and update last_value before the user enters data, and after the user enters data I read all 100 registers, to update it as current_state, so we can find if there is a change in registers value by comparing last and current state and print the value of register. 
+
+
 
 # client for modbus code
 ```
 from pyModbusTCP.client import ModbusClient
 
-# Ensure port matches your server
-client = ModbusClient(host="127.0.0.1", port=502, unit_id=1, auto_open=True)
+client = ModbusClient(host="127.0.0.1", port=1212, unit_id=1, auto_open=True)
 
 while True:
     print("\n--- Modbus Menu ---")
@@ -88,9 +80,9 @@ while True:
             reg_num = int(input("Enter Register Number (0-99): "))
             result = client.read_holding_registers(reg_num, 1)
             if result:
-                print(f">>> Register {reg_num} Value: {result[0]}")
+                print(f" Register {reg_num} Value: {result[0]}")
             else:
-                print(">>> Read Error.")
+                print(" Read Error.")
 
         # READ MULTIPLE
         elif choice == '2':
@@ -98,28 +90,28 @@ while True:
             count = int(input("How many registers to read?: "))
             result = client.read_holding_registers(start_reg, count)
             if result:
-                print(f">>> Values: {result}")
+                print(f"Values: {result}")
             else:
-                print(">>> Read Error.")
+                print(" Read Error.")
 
         # WRITE SINGLE
         elif choice == '3':
             reg_num = int(input("Enter Register Number (0-99): "))
             reg_val = int(input("Enter Value (0-65535): "))
             if client.write_single_register(reg_num, reg_val):
-                print(">>> Write OK!")
+                print(" Write OK!")
             else:
-                print(">>> Write Error.")
+                print(" Write Error.")
 
         # WRITE MULTIPLE
         elif choice == '4':
             start_reg = int(input("Enter Starting Register (0-99): "))
             val_string = input("Enter values separated by commas: ")
-            val_list = [int(v.strip()) for v in val_string.split(',')]
+            val_list = [int(v) for v in val_string.split(',')]
             if client.write_multiple_registers(start_reg, val_list):
-                print(f">>> Write OK!")
+                print(f" Write OK!")
             else:
-                print(">>> Write Error.")
+                print(" Write Error.")
         
         else:
             print("Invalid selection.")
@@ -129,3 +121,30 @@ while True:
 
 client.close()
 ```
+Here in this code we use:
+
+1. client.read_holding_registers() to read register, this requests the server to read, here the first value in the bracket will be the register number and second value will be how many register to read so this can be used to read single and multiple registers.
+
+
+2. client.write_single_register() to write single register, here first value is the register number and second value is the value to write in the register.
+
+
+3. client.write_multiple_registers() this is to write multiple, here first value is the starting value of register from which we have to write, and the second value is a list, this list contains the value to be written in the registers, so from the starting value registers are written for how many numbers are there in the list.
+
+
+# Difficulties I faced:
+
+1. no_block=True, here intially I gave no_block=False, so my code didnt work, after learning more, I realised that this line is to tell the computer to wait and check for connnections in the background, while continuing with the tasks, after server.start() command, if we give false, the computer keeps listening to clients, and never proceed to other lines.
+
+
+2. using get_words instead of  get_holding_register, this caused and error I used it this way ( DataBank.get_words) this was the basic syntax is got for Data bank in google, but while running the code it kept showing error, the error itself asked to use set_holding_registers() so I used (data_bank.get_holding_registers).
+
+
+
+3. I had trouble with the server, execution of while loop, it kept showing varies errors, and kept running infinetly without waiting for the client to respond, so after refering few other examples of modbus tcp server I figured they used sleep so I added that and the problem was rectified.
+
+
+4. Then in wireshark as I mentioned above I had trouble with capturing packets.
+
+
+5. Then I had trouble with choosing the port, because when I used port 502, the desginated port for modbus(tcp) I got port busy error, even after killing all the running operations, so I used another random port 1212, but this port didn't get recognised as modbus protocol, so I had to add this port as default modbus port to use modbus protocol function code stuff, I had hard time figuring this out.
