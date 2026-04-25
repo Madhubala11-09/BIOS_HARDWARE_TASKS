@@ -123,7 +123,7 @@ while True:
 client.close()
 ```
 ## Code explanation: 
-Here in this code we use:
+Here in this code we use a menu driven way, to let user decide on to read or write, and proceed accordingly. In each option we used the following to execute the functions:
 
 1. client.read_holding_registers() to read register, this requests the server to read, here the first value in the bracket will be the register number and second value will be how many register to read so this can be used to read single and multiple registers.
 
