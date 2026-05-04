@@ -1,0 +1,20 @@
+Types of honey pot:
+email
+databse
+malware
+spider
+honeybots
+```
+net cat
+scapy
+nmap
+```
+so first of all we have to understand mitm attack, here we have multiple types, in this we have interception.
+The attacker must convince the client to send data to them instead of the true server. This is commonly done through 
+ARP Poisoning (LAN): The attacker sends fake ARP messages on a local network to link their MAC address with the IP address of 
+the legitimate default gateway.
+The client's traffic is sent to the attacker.DNS Spoofing: The attacker poisons the DNS server, mapping the domain name
+(e.g., bank.com) to the attacker's malicious IP address rather than the real server's IP.
+Evil Twin Wi-Fi: The attacker creates a fake Wi-Fi hotspot with the same name as a legitimate one, making all traffic 
+pass through the attacker's device.
+and decryption or more accurately the setup
